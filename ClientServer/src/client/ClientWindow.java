@@ -8,103 +8,125 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class ClientWindow extends JFrame {
-    //server hostname
+public class ClientWindow extends JFrame{
+    //хостове імя серверу
     private static final String SERVER_HOST = "localhost";
-    //server port
+    //порт серверу
     private static final int SERVER_PORT = 3443;
-    // clients socket
+    // сокет клієнту
     private Socket clientSocket;
-    //Inputed message
+    //вхідні повідомлення
     private Scanner inMessage;
-    //Outputed message
+    //вихідні повідомлення
     private PrintWriter outMessage;
 
     private JTextField jtfMessage;
     private JTextField jtfName;
     private JTextArea jtaTextAreaMessage;
-    //Client name
+    //назва клієнту
     private String clientName = "";
-    //Getter for client
+    //Getter для клієнту
     public String getClientName() {
         return this.clientName;
     }
 
-    //Constructor
+    //консруктор але не Лєго
     public ClientWindow() {
         try {
-            //connecting to server
+            //зєднання з сервером
             clientSocket = new Socket(SERVER_HOST, SERVER_PORT);
             inMessage = new Scanner(clientSocket.getInputStream());
             outMessage = new PrintWriter(clientSocket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //form config
+        //конфігурація вікна
         setBounds(600, 300, 600, 500);
-        setTitle("Client like Telegram");
+
+        setTitle("Telegram XS MAX Pro Ultra 2.0 Infinite Remastered Lite");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jtaTextAreaMessage = new JTextArea();
         jtaTextAreaMessage.setEditable(false);
         jtaTextAreaMessage.setLineWrap(true);
         JScrollPane jsp = new JScrollPane(jtaTextAreaMessage);
         add(jsp, BorderLayout.CENTER);
-        // label, count users in chat
-        JLabel jlNumberOfClients = new JLabel("Users online ");
+        // мітка з кількістю користувачів
+        JLabel jlNumberOfClients = new JLabel("Живих користувачів ");
         add(jlNumberOfClients, BorderLayout.NORTH);
         JPanel bottomPanel = new JPanel(new BorderLayout());
         add(bottomPanel, BorderLayout.SOUTH);
-        JButton jbSendMessage = new JButton("Sender");
+        JButton jbSendMessage = new JButton("Відправити");
         bottomPanel.add(jbSendMessage, BorderLayout.EAST);
-        jtfMessage = new JTextField("Put here your message: ");
+        jtfMessage = new JTextField("Писати в модний чат сюди: ");
         bottomPanel.add(jtfMessage, BorderLayout.CENTER);
-        jtfName = new JTextField("Put here your nickname: ");
+        jtfName = new JTextField("Назвися: ");
         bottomPanel.add(jtfName, BorderLayout.WEST);
-        // event after press button
-        jbSendMessage.addActionListener(new ActionListener() {
+        // події після натиску на кнопку
+        jbSendMessage.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped (KeyEvent e){
+                    boolean isShiftDown = e.isShiftDown();
+                if (e.getKeyCode() == KeyEvent.VK_ENTER && isShiftDown == true) {
+                    sendMsg();
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+        jbSendMessage.addActionListener(new ActionListener()  {
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                // if client name, and messages not empty,go to sent
                 if (!jtfMessage.getText().trim().isEmpty() && !jtfName.getText().trim().isEmpty()) {
                     clientName = jtfName.getText();
                     sendMsg();
-                    // text line focus
                     jtfMessage.grabFocus();
                 }
             }
         });
-        // focus clear event line
+
+
+        // очистка стрічки фокусу
         jtfMessage.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
                 jtfMessage.setText("");
             }
         });
-        // focus clear name line
+        // очистка імені фокусу
         jtfName.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
                 jtfName.setText("");
             }
         });
-        // server starter
+        // пусковик серверу
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    // infinity cycle
+                    // вічний цикл
                     while (true) {
-                        //re we get inputed messages
+                        //отримання повідомлення
                         if (inMessage.hasNext()) {
-                            //reader
+                            //зчитування
                             String inMes = inMessage.nextLine();
-                            String clientsInChat = "Users in chat = ";
+                            String clientsInChat = "Людей в чаті = ";
                             if (inMes.indexOf(clientsInChat) == 0) {
                                 jlNumberOfClients.setText(inMes);
                             } else {
-                                // out message
+                                // вивід повідомлення
                                 jtaTextAreaMessage.append(inMes);
-                                // add transition on new line
+                                // перевід на нову стрічку
                                 jtaTextAreaMessage.append("\n");
                             }
                         }
@@ -113,19 +135,19 @@ public class ClientWindow extends JFrame {
                 }
             }
         }).start();
-        // event for closing client window
+        // події закриття відкна
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
                 try {
-                    // check not empty name and name not default
-                    if (!clientName.isEmpty() && clientName != "Put your name: ") {
-                        outMessage.println(clientName + " exit from chat!");
+                    // перевірка імені чи не є воно порожнім
+                    if (!clientName.isEmpty() && clientName != "Назвися: ") {
+                        outMessage.println(clientName + " покинув нас...");
                     } else {
-                        outMessage.println("The participant left the chat without introducing himself!");
+                        outMessage.println("Він залишив нас, так і не назвавшись...");
                     }
-                    // отправляем служебное сообщение, которое является признаком того, что клиент вышел из чата
+                    // відправка службового повідомлення яке є сигналом того що клієнт вийшов з чату
                     outMessage.println("##session##end##");
                     outMessage.flush();
                     outMessage.close();
@@ -136,18 +158,19 @@ public class ClientWindow extends JFrame {
                 }
             }
         });
-        // visualise form
+        // відобаження форми
         setVisible(true);
     }
 
-    // отправка сообщения
+    // відправлення повідомлень
     public void sendMsg() {
-        // формируем сообщение для отправки на сервер
+        // формування повідомлення для відправки
         String messageStr = jtfName.getText() + ": " + jtfMessage.getText();
-        // отправляем сообщение
+        // відправляємо повідомлення
         outMessage.println(messageStr);
         outMessage.flush();
         jtfMessage.setText("");
     }
+
 }
 
