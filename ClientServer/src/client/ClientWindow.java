@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.net.Socket;
+import java.security.Key;
 import java.util.Scanner;
 
 public class ClientWindow extends JFrame{
@@ -62,26 +63,7 @@ public class ClientWindow extends JFrame{
         jtfName = new JTextField("Назвися: ");
         bottomPanel.add(jtfName, BorderLayout.WEST);
         // події після натиску на кнопку
-        jbSendMessage.addKeyListener(new KeyListener() {
 
-            @Override
-            public void keyTyped (KeyEvent e){
-                    boolean isShiftDown = e.isShiftDown();
-                if (e.getKeyCode() == KeyEvent.VK_ENTER && isShiftDown == true) {
-                    sendMsg();
-                }
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
-        });
         jbSendMessage.addActionListener(new ActionListener()  {
 
             @Override
@@ -93,7 +75,6 @@ public class ClientWindow extends JFrame{
                 }
             }
         });
-
 
         // очистка стрічки фокусу
         jtfMessage.addFocusListener(new FocusAdapter() {
@@ -171,6 +152,4 @@ public class ClientWindow extends JFrame{
         outMessage.flush();
         jtfMessage.setText("");
     }
-
 }
-
