@@ -17,7 +17,7 @@ public class ClientWindow extends JFrame {
     private Socket clientSocket;
     //Inputed message
     private Scanner inMessage;
-    //Uotputed message
+    //Outputed message
     private PrintWriter outMessage;
 
     private JTextField jtfMessage;

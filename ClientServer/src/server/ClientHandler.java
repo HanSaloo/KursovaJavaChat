@@ -49,18 +49,18 @@ public class ClientHandler implements Runnable {
                 // Якщо від клієнта прийшло повідомлення
                 if (inMessage.hasNext()) {
                     String clientMessage = inMessage.nextLine();
-										// если клиент отправляет данное сообщение, то цикл прерывается и 
-										// клиент выходит из чата
+										// якщо клієнт відправляє це повідомлення, то цикл переривається і
+										// клієнт виходить з чату
                     if (clientMessage.equalsIgnoreCase("##session##end##")) {
                         break;
                     }
-										// выводим в консоль сообщение (для теста)
+										// виводимо в консоль повідомлення (тестове)
                     System.out.println(clientMessage);
-										// отправляем данное сообщение всем клиентам
+										// відправляєм повідомлення всім клієнтам
                     server.sendMessageToAllClients(clientMessage);
                 }
-								// останавливаем выполнение потока на 100 мс
-                Thread.sleep(100);
+								// зупиняєм потік на на 110 мс
+                Thread.sleep(110);
             }
         }
         catch (InterruptedException ex) {
@@ -70,7 +70,7 @@ public class ClientHandler implements Runnable {
             this.close();
         }
     }
-		// отправляем сообщение
+		// відправляєм повідомлення
     public void sendMsg(String msg) {
         try {
             outMessage.println(msg);
@@ -79,11 +79,11 @@ public class ClientHandler implements Runnable {
             ex.printStackTrace();
         }
     }
-		// клиент выходит из чата
+		// клієнт виходить з чату
     public void close() {
-				// удаляем клиента из списка
+				// видаляєм клієнта зі списку
         server.removeClient(this);
         clients_count--;
-        server.sendMessageToAllClients("Клиентов в чате = " + clients_count);
+        server.sendMessageToAllClients("Клієнтів в чаті = " + clients_count);
     }
 }

@@ -6,31 +6,33 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import static java.lang.System.out;
+
 public class Server {
-		// порт, который будет прослушивать наш сервер
+		// порт, який буде перевіряти наш сервер
     static final int PORT = 3443;
-		// список клиентов, которые будут подключаться к серверу
+		// список клієнтів, які будуть підключатись до серверу
     private ArrayList<ClientHandler> clients = new ArrayList<ClientHandler>();
 
     public Server() {
-				// сокет клиента, это некий поток, который будет подключаться к серверу
-				// по адресу и порту
+				// сокет клієнта, це такий собі потік, який буде підключатись до серверу
+				// маючи адресу і порт
         Socket clientSocket = null;
-				// серверный сокет
+				// серверний сокет
         ServerSocket serverSocket = null;
         try {
-						// создаём серверный сокет на определенном порту
+						// створюєм серверний сокет на первному порті
             serverSocket = new ServerSocket(PORT);
-            System.out.println("Сервер запущен!");
-						// запускаем бесконечный цикл
+            out.println("Сервер пашить!");
+						// запускаєм вічний цикл
             while (true) {
-								// таким образом ждём подключений от сервера
+								// таким чином чекаєм на відгук підключення від сервера
                 clientSocket = serverSocket.accept();
-								// создаём обработчик клиента, который подключился к серверу
-								// this - это наш сервер
+								// створюєм обробку клієнту, який буде підключатись до серверу
+								// а this - це і є сервер
                 ClientHandler client = new ClientHandler(clientSocket, this);
                 clients.add(client);
-								// каждое подключение клиента обрабатываем в новом потоке
+								// кожне підключення клієнта обробляєм через новий потік
                 new Thread(client).start();
             }
         }
@@ -39,9 +41,9 @@ public class Server {
         }
         finally {
             try {
-								// закрываем подключение
+								// закриваєм підключення
                 clientSocket.close();
-                System.out.println("Сервер остановлен");
+                out.println("Сервер наївся і спит!");
                 serverSocket.close();
             }
             catch (IOException ex) {
@@ -50,7 +52,7 @@ public class Server {
         }
     }
 		
-		// отправляем сообщение всем клиентам
+		// відправляєм повідомлення всім клієнтам
     public void sendMessageToAllClients(String msg) {
         for (ClientHandler o : clients) {
             o.sendMsg(msg);
@@ -58,7 +60,7 @@ public class Server {
 
     }
 
-		// удаляем клиента из коллекции при выходе из чата
+		// видаляєм клієнтів при виході з чату
     public void removeClient(ClientHandler client) {
         clients.remove(client);
     }
