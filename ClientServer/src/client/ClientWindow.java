@@ -44,7 +44,7 @@ public class ClientWindow extends JFrame{
         //конфігурація вікна
         setBounds(600, 300, 600, 500);
 
-        setTitle("Telegram XS MAX Pro Ultra 2.0 Infinite Remastered Lite Simulator Demo");
+        setTitle("Telegram XS MAX Pro Ultra 2.0 Infinite Remastered Lite Simulator SaMoGoNkA edition Mint Demo");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jtaTextAreaMessage = new JTextArea();
         jtaTextAreaMessage.setEditable(false);
